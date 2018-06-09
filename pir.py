@@ -5,7 +5,7 @@ import logging
 
 GPIO.setup(23, GPIO.IN) #PIR 
 GPIO.setup(24, GPIO.OUT) #relay 
-logging.basicConfig(filename='/home/pi/projects/pir.log',
+logging.basicConfig(filename='./pir.log',
     format='%(asctime)s %(message)s',
     datefmt='%m/%d/%Y %I:%M:%S %p',
     level=logging.INFO)
