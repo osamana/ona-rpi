@@ -20,15 +20,18 @@ ENABLE_FLASHING = False
 
 GPIO.setup(PIR, GPIO.IN) #PIR
 GPIO.setup(RELAY, GPIO.OUT) #relay
+
+GPIO.output(RELAY, False)
+
 logging.basicConfig(filename='./pir_sense_delay.log',
     format='%(asctime)s %(message)s',
     datefmt='%m/%d/%Y %I:%M:%S %p',
     level=logging.INFO)
 
 debug = False
-ON_TIME = 60 * 5 # five minutes
+ON_TIME = 60*5 # five minutes
 
-BTN_BOUNCETIME = 50
+BTN_BOUNCETIME = 100
 
 timer = None
 
@@ -36,7 +39,7 @@ def trun_flash_off():
     GOIO.output(LED, True)
 
 def flash():
-    print("Flash")
+    logging.info("flash notification fired")
     # trurn led on
     GOIO.output(LED, True)
     Timer(0.5, turn_flash_off)
@@ -45,17 +48,18 @@ def turn_relay_off():
     GPIO.output(RELAY, False)
 
 def cb(channel):
-    print('rising edge on pir')
+    logging.info('rising edge on pir')
     # turn on the RELAY
-    GOIO.output(RELAY, True)
+    GPIO.output(RELAY, True)
     # start a timer to call a function to trun off the RELAY
     global timer
     if timer:
         timer.cancel()
+        logging.info("delaying: reseting the timer for a new " + str(ON_TIME) + " seconds.")
     # kinda of refresh the timer
     if ENABLE_FLASHING:
         flash()
-    timer = Timer(ON_TIME, trun_relay_off)
+    timer = Timer(ON_TIME, turn_relay_off)
     timer.start()
 
 
